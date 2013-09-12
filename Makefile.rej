@@ -1,0 +1,31 @@
+--- Makefile	2008-11-02 19:10:22.000000000 +0100
++++ Makefile	2008-11-02 19:57:12.000000000 +0100
+@@ -85,6 +88,12 @@
+ 	endif
+ endif
+ 
++
++# Cell Broadband Engine SPE compiler
++SPU_CC		?= spu-gcc
++SPU_CFLAGS	+= -Wall -O3
++
++
+ all: osd userland $(SBINFILES)
+ 
+ userland: $(BINFILES)
+@@ -111,7 +120,14 @@
+ 	aircrack-ng-opt-prof -lpthread $(LIBSQL)
+ 
+ aircrack-ng$(EXE): $(OBJS_AC)
+-	$(CC) $(CFLAGS) $(OBJS_AC) -o $(@) -lpthread $(LIBSSL) $(LIBSQL)
++	$(CC) $(CFLAGS) $(OBJS_AC) -o $(@) -lpthread $(LIBSSL) $(LIBSQL) $(LIBSPE2)
++
++# Cell Broadband Engine SPE code for WEP cracking
++aircrack-ng-wep-spe.elf: aircrack-ng-wep-spe.c
++	$(SPU_CC) $(SPU_CFLAGS) $^ -o $@
++# Cell Broadband Engine SPE code for WPA cracking
++aircrack-ng-wpa-spe.elf: aircrack-ng-wpa-spe.c
++	$(SPU_CC) $(SPU_CFLAGS) $^ -o $@
+ 
+ airdecap-ng$(EXE): $(OBJS_AD)
+ 	$(CC) $(CFLAGS) $(OBJS_AD) -o $(@) $(LIBSSL)
